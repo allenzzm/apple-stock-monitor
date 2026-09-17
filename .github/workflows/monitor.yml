@@ -1,1 +1,27 @@
+name: Apple Stock Monitor
 
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+
+jobs:
+  check-stock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run stock monitor
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          ZIP_CODE: ${{ vars.ZIP_CODE }}
+          PRODUCTS_TO_MONITOR: ${{ vars.PRODUCTS_TO_MONITOR }}
+        run: python monitor.py
